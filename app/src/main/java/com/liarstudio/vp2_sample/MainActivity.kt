@@ -2,7 +2,9 @@ package com.liarstudio.vp2_sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.liarstudio.vp2_sample.callback.OnPageStateChangeCallback
 import com.liarstudio.vp2_sample.controller.PositionController
 import com.liarstudio.vp2_sample.controller.LoaderItemController
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,17 +31,14 @@ class MainActivity : AppCompatActivity() {
         main_pager.adapter = adapter
         renderItems()
 
-        main_pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                val isLastPage = position == items.lastIndex
+        main_pager.registerOnPageChangeCallback(OnPageStateChangeCallback { position, state ->
+            val isIdle = state == RecyclerView.SCROLL_STATE_IDLE
+            val isLastPage = position == items.lastIndex
 
-                if (isLastPage && !isPageLoading) {
-                    isPageLoading = true
-                    // this method is placed in the end of message queue
-                    // because we can't update recyclerView's contents during scroll
-                    main_pager.post { renderItems() }
-                    main_pager.postDelayed(::handleNewItems, 2000L)
-                }
+            if (isIdle && isLastPage && !isPageLoading) {
+                isPageLoading = true
+                renderItems()
+                main_pager.postDelayed(::handleNewItems, 2000L)
             }
         })
     }
