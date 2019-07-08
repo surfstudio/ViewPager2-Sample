@@ -2,13 +2,14 @@ package com.liarstudio.vp2_sample
 
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView.NO_ID
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
 /**
  * Adapter for fragments
  */
-class FragmentAdapter(fm: FragmentManager) : FragmentStateAdapter(fm) {
+class FragmentAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
     var items: List<Int>
         set(value) {
@@ -19,12 +20,9 @@ class FragmentAdapter(fm: FragmentManager) : FragmentStateAdapter(fm) {
 
     private var mutableItems = mutableListOf<Int>()
 
-    /**
-     * @see FragmentStateAdapter.getItem
-     */
-    override fun getItem(position: Int): Fragment {
+    override fun createFragment(position: Int): Fragment {
         return PositionFragment::class.java.newInstance()
-                .apply { arguments = bundleOf(ARG_POSITION to items[position]) }
+            .apply { arguments = bundleOf(ARG_POSITION to items[position]) }
     }
 
     /**
@@ -33,6 +31,7 @@ class FragmentAdapter(fm: FragmentManager) : FragmentStateAdapter(fm) {
      * @see FragmentStateAdapter.getItemId
      */
     override fun getItemId(position: Int): Long {
+        if (position < 0) return NO_ID
         return items[position].toLong()
     }
 

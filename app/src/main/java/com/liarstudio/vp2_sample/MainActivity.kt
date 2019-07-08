@@ -3,6 +3,7 @@ package com.liarstudio.vp2_sample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -17,8 +18,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapter = FragmentAdapter(supportFragmentManager)
-                .apply { items = listOf(0, 1, 2) }
+        adapter = FragmentAdapter(this)
+            .apply { items = listOf(0, 1, 2) }
 
         main_pager.adapter = adapter
 
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d("OnPageChangeCallback", "Page selected: $position")
             }
         })
+
+        main_pager.setPageTransformer(MarginPageTransformer(300))
 
         add_btn.setOnClickListener {
             addAfterCurrent()
